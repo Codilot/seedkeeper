@@ -55,7 +55,6 @@ exports.valuationTemplateCreate = [
         newValuationTemplate
             .save()
             .then((valuationTemplate) => {
-                console.log(valuationTemplate);
                 res.status(201).json(valuationTemplate);
             })
             .catch((error) => {
