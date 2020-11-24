@@ -8,7 +8,7 @@ const mailer = require("../middlewares/mailer");
 const { MAIL } = require("../helpers/constants");
 
 exports.userList = [
-    JWTauth,
+    // JWTauth,
     function (req, res) {
         User.find()
             .then((users) => {
@@ -36,8 +36,7 @@ exports.userCreate = [
         .isEmpty()
         .withMessage("Email is required.")
         .isEmail()
-        .withMessage("Email must be a valid email address.")
-        .normalizeEmail(),
+        .withMessage("Email must be a valid email address."),
     check("password")
         .not()
         .isEmpty()
@@ -75,7 +74,6 @@ exports.userCreate = [
                 newUser
                     .save()
                     .then((user) => {
-                        //res.status(201).json(user);
                         // Create a verification token for this user
                         let token = new Token({
                             _userId: user._id,
@@ -86,24 +84,23 @@ exports.userCreate = [
                             res.status(500).send("Error: " + error);
                         });
                         //Send Confirmation Email
+                        console.log(user.Email)
+                        console.log(MAIL.confirmMail.from)
                         let html =
-                            "<p>Please verify your account by clicking this link:</p><p>http://" +
-                            req.headers.host +
-                            "/confirmation/" +
-                            token.token +
-                            "</p>";
+                            `<p>Please verify your account by clicking this link:</p>
+                            <p>http://${req.headers.host}/login/confirmation/${token.token}</p>`;
                         mailer
-                            .send({
-                                from: MAIL.confirmMail.from,
-                                to: user.email,
-                                subject: "Account Verification Token",
-                                html: html,
-                            })
-                            .then(
-                                res.status(200).send({
-                                    message: `A verification email has been sent to ${user.Email}`,
-                                })
+                            .send(
+                                MAIL.confirmMail.from,
+                                user.Email,
+                                "Account Verification Token",
+                                html,
                             )
+                            .then(() => {
+                                res.status(200).send({
+                                    message: `A verification email has been sent to ${req.body.email}`,
+                                })
+                            })
                             .catch((error) => {
                                 console.error(error);
                                 res.status(500).send("Error: " + error);
@@ -173,7 +170,7 @@ exports.userUpdate = [
                     res.status(201).json(updatedUser);
                 } else {
                     res.status(404).send(
-                        `User with id ${res.params.id} was not found`
+                        `User with id ${req.params.id} was not found`
                     );
                 }
             })
@@ -199,11 +196,16 @@ exports.userDetail = [
 ];
 
 exports.userDelete = [
-    JWTauth,
+    // JWTauth,
     function (req, res) {
         User.findByIdAndDelete(req.params.id)
             .then((user) => {
-                res.status(201).send(
+                if (!user) {
+                    return res.status(404).send(
+                        `User with id ${req.params.id} was not found`
+                    );
+                } 
+                return res.status(201).send(
                     `User with id ${req.params.id} was deleted`
                 );
             })

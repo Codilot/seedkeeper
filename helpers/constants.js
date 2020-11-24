@@ -1,5 +1,5 @@
 exports.MAIL = {
     confirmMail: {
-        from: "no-reply@seedkeeper.herokuapp.com",
+        from: "info@evelinekooijman.com",
     },
 };

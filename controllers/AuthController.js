@@ -73,19 +73,7 @@ exports.loginPage = [
     },
 ];
 
-// json example
-// {
-//     "token": "",
-//     "email": "eve@eve.com"
-// }
-exports.confirmationPost = [
-    check("email")
-        .not()
-        .isEmpty()
-        .withMessage("Email is required.")
-        .isEmail()
-        .withMessage("Email must be a valid email address.")
-        .normalizeEmail(),
+exports.confirmation = [
     check("token").not().isEmpty().withMessage("Token cannot be blank."),
 
     function (req, res) {
@@ -93,7 +81,7 @@ exports.confirmationPost = [
         if (!errors.isEmpty()) {
             return res.status(422).json({ errors: errors.array() });
         }
-        Token.findOne({ token: req.body.token })
+        Token.findOne({ token: req.params.token })
             .then((token) => {
                 if (!token) {
                     return res
@@ -105,7 +93,6 @@ exports.confirmationPost = [
                 // If a token is found, find a matching user
                 User.findOne({
                     _id: token._userId,
-                    Email: req.body.email,
                 }).then((user) => {
                     if (!user) {
                         return res
@@ -123,7 +110,7 @@ exports.confirmationPost = [
                     user.save()
                         .then((user) => {
                             res.status(200).send({
-                                message: `Welcome ${user.name}, your account has been verified. Please log in.`,
+                                message: `Welcome ${user.Username}, your account has been verified. Please log in.`,
                             });
                         })
                         .catch((error) => {
@@ -135,8 +122,7 @@ exports.confirmationPost = [
             .catch((error) => {
                 console.error(error);
                 res.status(500).send("Error: " + error);
-            });;
-
+            });
     },
 ];
 
