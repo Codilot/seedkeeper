@@ -8,7 +8,7 @@ const mailer = require("../middlewares/mailer");
 const { MAIL } = require("../helpers/constants");
 
 exports.userList = [
-    // JWTauth,
+    JWTauth,
     function (req, res) {
         User.find()
             .then((users) => {
@@ -84,22 +84,19 @@ exports.userCreate = [
                             res.status(500).send("Error: " + error);
                         });
                         //Send Confirmation Email
-                        console.log(user.Email)
-                        console.log(MAIL.confirmMail.from)
-                        let html =
-                            `<p>Please verify your account by clicking this link:</p>
+                        let html = `<p>Please verify your account by clicking this link:</p>
                             <p>http://${req.headers.host}/login/confirmation/${token.token}</p>`;
                         mailer
                             .send(
                                 MAIL.confirmMail.from,
                                 user.Email,
                                 "Account Verification Token",
-                                html,
+                                html
                             )
                             .then(() => {
                                 res.status(200).send({
                                     message: `A verification email has been sent to ${req.body.email}`,
-                                })
+                                });
                             })
                             .catch((error) => {
                                 console.error(error);
@@ -196,18 +193,18 @@ exports.userDetail = [
 ];
 
 exports.userDelete = [
-    // JWTauth,
+    JWTauth,
     function (req, res) {
         User.findByIdAndDelete(req.params.id)
             .then((user) => {
                 if (!user) {
-                    return res.status(404).send(
-                        `User with id ${req.params.id} was not found`
-                    );
-                } 
-                return res.status(201).send(
-                    `User with id ${req.params.id} was deleted`
-                );
+                    return res
+                        .status(404)
+                        .send(`User with id ${req.params.id} was not found`);
+                }
+                return res
+                    .status(201)
+                    .send(`User with id ${req.params.id} was deleted`);
             })
             .catch((err) => {
                 console.error(err);

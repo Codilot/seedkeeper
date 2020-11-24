@@ -74,7 +74,14 @@ exports.loginPage = [
 ];
 
 exports.confirmation = [
-    check("token").not().isEmpty().withMessage("Token cannot be blank."),
+    check("token")
+        .not()
+        .isEmpty()
+        .withMessage("Token cannot be blank.")
+        .isLength({ min: 15 })
+        .trim()
+        .escape()
+        .withMessage("Invalid Token."),
 
     function (req, res) {
         let errors = validationResult(req);
@@ -160,12 +167,12 @@ exports.resendTokenPost = [
                 token.token +
                 "</p>";
             mailer
-                .send({
-                    from: MAIL.confirmMail.from,
-                    to: req.body.email,
-                    subject: "Confirm Account",
-                    html: html,
-                })
+                .send(
+                    MAIL.confirmMail.from,
+                    req.body.email,
+                    "Confirm Account",
+                    html
+                )
                 .catch((error) => {
                     console.error(error);
                     res.status(500).send("Error: " + error);

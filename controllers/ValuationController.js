@@ -45,7 +45,6 @@ exports.valuationCreate = [
         
         ValuationTemplate.findById(req.body.valuationTemplateId)
             .then((template) => {
-                console.log(template);
                 const tasks = template.TaskDetails.map((taskdetail) => {
                     return new Task({
                         Status: "open",

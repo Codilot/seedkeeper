@@ -49,7 +49,6 @@ exports.taskDetailCreate = [
             { new: true } // This line makes sure that the updated document is returned
         )
             .then((valuationTemplate) => {
-                console.log(valuationTemplate);
                 res.status(201).json(valuationTemplate);
             })
             .catch((error) => {
