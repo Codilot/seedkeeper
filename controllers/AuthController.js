@@ -160,12 +160,8 @@ exports.resendTokenPost = [
                 res.status(500).send("Error: " + error);
             });
             //Send Confirmation Email
-            let html =
-                "<p>Please verify your account by clicking this link:</p><p>http://" +
-                req.headers.host +
-                "/confirmation/" +
-                token.token +
-                "</p>";
+            let html = `<p>Please verify your account by clicking this link:</p>
+                        <p>http://${req.headers.host}/login/confirmation/${token.token}</p>`;
             mailer
                 .send(
                     MAIL.confirmMail.from,
