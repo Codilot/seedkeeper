@@ -9,7 +9,7 @@ const express = require("express"),
 
 require("dotenv").config();
 
-var MONGODB_URL = process.env.MONGODB_URL;
+let MONGODB_URL = process.env.MONGODB_URL;
 mongoose.connect(MONGODB_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
