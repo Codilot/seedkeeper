@@ -1,4 +1,8 @@
-let allowedOrigins = ["http://localhost:8080", "http://testsite.com"];
+let allowedOrigins = [
+    "http://localhost:8080",
+    "http://localhost:1234",
+    "https://seedkeeper.herokuapp.com",
+];
 
 const corsConfig = {
     origin: (origin, callback) => {
