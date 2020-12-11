@@ -60,11 +60,9 @@ exports.userCreate = [
         User.findOne({ Email: req.body.email })
             .then((user) => {
                 if (user) {
-                    return res
-                        .status(400)
-                        .send(
-                            `User with email ${req.body.email} already exists`
-                        );
+                    return res.status(400).send({
+                        message: `User with email ${req.body.email} already exists`,
+                    });
                 }
                 const newUser = new User({
                     Username: req.body.username,
